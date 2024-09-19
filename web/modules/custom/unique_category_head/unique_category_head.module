@@ -1,0 +1,45 @@
+<?php
+
+/**
+ * @file
+ * This file contains hooks for module file.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\user\Entity\User;
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function unique_category_head_form_user_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $form['#validate'][] = 'unique_category_head_validate';
+}
+
+/**
+ * Custom validation function for user form.
+ *
+ * Checks if the selected category is already assigned to another editor.
+ *
+ * @param array $form
+ *   The form array.
+ * @param Drupal\Core\Form\FormStateInterface $form_state
+ *   The current state of the form.
+ */
+function unique_category_head_validate($form, FormStateInterface $form_state) {
+  $selected_category = $form_state->getValue('field_catagory_head');
+  $selected_category_id = !empty($selected_category[0]['target_id']) ? $selected_category[0]['target_id'] : NULL;
+  $user_ids = \Drupal::entityQuery('user')
+    ->condition('status', 1)
+    ->condition('roles', 'editor')
+    ->accessCheck(TRUE)
+    ->execute();
+  foreach ($user_ids as $user_id) {
+    $user = User::load($user_id);
+    if ($user->hasField('field_catagory_head') && !empty($user->get('field_catagory_head')->target_id)) {
+      $existing_category = $user->get('field_catagory_head')->target_id;
+      if ($existing_category == $selected_category_id) {
+        $form_state->setErrorByName('field_catagory_head', t('This category is already assigned to another editor. please take another category'));
+      }
+    }
+  }
+}

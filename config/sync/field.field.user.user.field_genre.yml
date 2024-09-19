@@ -1,0 +1,41 @@
+uuid: 88746977-d2e9-4ac5-9ba4-7392474b79cc
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.user.field_genre
+    - taxonomy.vocabulary.categories
+  module:
+    - multiple_registration
+    - user
+third_party_settings:
+  multiple_registration:
+    user_additional_register_form_required:
+      news_anchor: news_anchor
+      authenticated: 0
+      editor: 0
+    user_additional_register_form:
+      news_anchor: news_anchor
+      authenticated: 0
+      editor: 0
+id: user.user.field_genre
+field_name: field_genre
+entity_type: user
+bundle: user
+label: genre
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      categories: categories
+    sort:
+      field: name
+      direction: asc
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

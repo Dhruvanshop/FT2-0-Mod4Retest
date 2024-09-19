@@ -1,0 +1,8 @@
+mlid:
+  'menu_link_content:d52138dd-a49a-4e86-b4bb-04a125a96b10':
+    roles:
+      - authenticated
+      - administrator
+      - news_anchor
+      - editor
+    access_check: false

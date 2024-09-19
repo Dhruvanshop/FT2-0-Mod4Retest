@@ -1,0 +1,25 @@
+uuid: d2fa3098-f55c-42a9-9407-c3e636c02158
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.news
+  module:
+    - field_permissions
+    - node
+id: news_anchor
+label: 'News Anchor'
+weight: 4
+is_admin: null
+permissions:
+  - 'create body'
+  - 'create field_category'
+  - 'create field_thumbnail'
+  - 'create news content'
+  - 'delete own news content'
+  - 'edit own field_category'
+  - 'edit own field_thumbnail'
+  - 'edit own news content'
+  - 'view own body'
+  - 'view own field_category'
+  - 'view own field_thumbnail'
