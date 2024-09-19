@@ -11,8 +11,8 @@ label: Administrator
 weight: 3
 is_admin: true
 permissions:
-  - 'create field_genre'
-  - 'edit field_genre'
-  - 'edit own field_genre'
-  - 'view field_genre'
-  - 'view own field_genre'
+  - 'create field_hashtag'
+  - 'edit field_hashtag'
+  - 'edit own field_hashtag'
+  - 'view field_hashtag'
+  - 'view own field_hashtag'

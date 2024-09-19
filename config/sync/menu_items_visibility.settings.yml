@@ -6,3 +6,13 @@ mlid:
       - news_anchor
       - editor
     access_check: false
+  'menu_link_content:ffb9fedf-b1ad-46f7-b245-2129f037ae00':
+    roles:
+      - administrator
+    access_check: false
+  'menu_link_content:6c2246e0-2cde-4e66-a771-dc09c0afa603':
+    roles:
+      - administrator
+      - news_anchor
+      - editor
+    access_check: false

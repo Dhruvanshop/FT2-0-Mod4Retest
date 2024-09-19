@@ -12,8 +12,10 @@ module:
   config: 0
   contact: 0
   contextual: 0
+  custom_form: 0
   datetime: 0
   dblog: 0
+  delete_old_news: 0
   dynamic_page_cache: 0
   editor: 0
   field: 0

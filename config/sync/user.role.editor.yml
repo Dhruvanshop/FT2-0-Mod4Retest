@@ -3,18 +3,25 @@ langcode: en
 status: true
 dependencies:
   config:
+    - node.type.news
     - taxonomy.vocabulary.hashtags
   module:
     - field_permissions
+    - node
     - taxonomy
+    - toolbar
 id: editor
 label: Editor
 weight: 5
 is_admin: null
 permissions:
+  - 'access content overview'
+  - 'access toolbar'
   - 'create field_hashtag'
   - 'create terms in hashtags'
+  - 'edit any news content'
   - 'edit field_hashtag'
   - 'edit own field_hashtag'
+  - 'edit own news content'
   - 'view field_hashtag'
   - 'view own field_hashtag'

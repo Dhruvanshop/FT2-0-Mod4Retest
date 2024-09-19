@@ -1,0 +1,94 @@
+<?php
+
+/**
+ * @file
+ * Contains news delete hooks.
+ */
+
+/**
+ * Implements hook_cron().
+ *
+ * Deletes news nodes older than 6 months.
+ * Also send a mail of deleted nodes to all editors.
+ */
+function delete_old_news_cron() {
+  $current_time = \Drupal::time()->getRequestTime();
+  $six_months_ago = strtotime('-6 months', $current_time);
+  $node_storage = \Drupal::entityTypeManager()->getStorage('node');
+  $query = $node_storage->getQuery();
+  $query->condition('type', 'news');
+  $query->condition('status', 1);
+  $query->condition('created', $six_months_ago, '<');
+  $query->accessCheck(FALSE);
+
+  $nids = $query->execute();
+  $deleted_news_count = 0;
+  $deleted_node_titles = [];
+
+  if (!empty($nids)) {
+    $nodes = $node_storage->loadMultiple($nids);
+
+    foreach ($nodes as $node) {
+      try {
+        $deleted_node_titles[] = $node->getTitle();
+        $node->delete();
+        $deleted_news_count++;
+      }
+      catch (\Exception $e) {
+      }
+    }
+
+    if ($deleted_news_count > 0) {
+      $mail_manager = \Drupal::service('plugin.manager.mail');
+      $module = 'delete_old_news';
+      $key = 'delete_old';
+      $langcode = \Drupal::currentUser()->getPreferredLangcode();
+      $node_titles_string = implode("\n", $deleted_node_titles);
+
+      $editor_role = 'editor';
+      $user_storage = \Drupal::entityTypeManager()->getStorage('user');
+      $editor_uids = \Drupal::entityQuery('user')
+        ->condition('status', 1)
+        ->condition('roles', $editor_role)
+        ->accessCheck(FALSE)
+        ->execute();
+
+      if (!empty($editor_uids)) {
+        $editors = $user_storage->loadMultiple($editor_uids);
+        $valid_emails = [];
+
+        foreach ($editors as $editor) {
+          $email = $editor->getEmail();
+
+          if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $valid_emails[] = $email;
+          }
+        }
+
+        if (!empty($valid_emails)) {
+          $params['subject'] = t('News delete old');
+          $params['message'] = t('The cleanup process has deleted @count old news items.', ['@count' => $deleted_news_count]) . "\n\n" . t('Deleted News Titles:') . "\n" . $node_titles_string;
+
+          foreach ($valid_emails as $to) {
+            $result = $mail_manager->mail($module, $key, $to, $langcode, $params);
+
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_mail().
+ *
+ * Defines the email message to be sent.
+ */
+function delete_old_news_mail($key, &$message, $params) {
+  switch ($key) {
+    case 'delete_old':
+      $message['subject'] = $params['subject'];
+      $message['body'][] = $params['message'];
+      break;
+  }
+}
